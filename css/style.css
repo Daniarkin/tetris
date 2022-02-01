@@ -10,12 +10,12 @@
   gap:2px;
   height: calc(100vh - 16px);
   width: calc(50vh - 8px);
-  background: rgb(15, 8, 3);
+  background: rgb(108, 124, 175);
   
 }
 
 
 .block {
-  background: #381700;
+  background: #033f03;
 
 }
