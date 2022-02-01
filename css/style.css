@@ -10,12 +10,12 @@
   gap:2px;
   height: calc(100vh - 16px);
   width: calc(50vh - 8px);
-  background: chocolate;
+  background: rgb(15, 8, 3);
   
 }
 
 
 .block {
-  background: #f19757;
+  background: #381700;
 
 }
