@@ -15,10 +15,24 @@ renderInert();
 // const brick1 = [{ x: 3, y: 6 }, { x: 3, y: 7 }, { x: 4, y: 7 }, { x: 4, y: 8 }]
 
 // brick1.forEach(coords => blocks[coords.y*10 + coords.x].style.background = 'red')
+fetch('bricks.txt').then(response => response.text()).then(parse).then(brikcs=> {
+    
+    const brick = bricks[rnd(bricks.length)]
+    for (let i = 0; i < 3; i++) {
+      moveBrick(brick, 'right');
+    }
+    brick.coords.forEach(coords => blocks[coords.y * 10 + coords.x].style.background = brick.color)
 
-fetch('bricks.txt').then(response => response.text()).then(bricks => {
+    setInterval(() => {
+      renderInert();
+      moveBrick(brick, 'down');
+      brick.coords.forEach(coords => blocks[coords.y * 10 + coords.x].style.background = brick.color)
+    }, 400)
+  })
 
-  bricks = bricks.split('\r\n\r\n');
+
+function parse(str) {
+  const bricks = str.split('\r\n\r\n');
 
   for (let i = 0; i < bricks.length; i++) {
     let brick = bricks[i].split('\r\n');
@@ -41,19 +55,10 @@ fetch('bricks.txt').then(response => response.text()).then(bricks => {
       color
     }
   }
-  console.log(bricks);
 
-  const brick = bricks[rnd(bricks.length)]
-  for(let i = 0; i < 3; i++){
-    moveBrick(brick,'right');
-  }
-  brick.coords.forEach(coords => blocks[coords.y * 10 + coords.x].style.background = brick.color)
-  setInterval(() => {
-    renderInert();
-    moveBrick(brick,'down');
-    brick.coords.forEach(coords => blocks[coords.y * 10 + coords.x].style.background = brick.color)
-  },400)
-})
+  return bricks
+
+}
 
 function rnd(max) {
   return Math.floor(Math.random() * max)
@@ -63,10 +68,10 @@ function renderInert() {
   blocks.forEach((block, i) => block.style.background = inertState[Math.floor(i / 10)][i % 10]);
 }
 
-function moveBrick(brick,side){
+function moveBrick(brick, side) {
   if (side === 'down') {
     brick.coords.forEach(coords => coords.y++);
-  }else if (side === 'right') {
+  } else if (side === 'right') {
     brick.coords.forEach(coords => coords.x++);
   }
 }
