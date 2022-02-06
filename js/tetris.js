@@ -3,7 +3,10 @@
 
 // const brick = [{ x: 3, y: 3 }, { x: 4, y: 3 }, { x: 5, y: 3 }, { x: 4, y: 4 }]
 const blocks = document.querySelectorAll('.block');
+const brick = []
 const inertState = Array(20).fill().map(() => Array(10).fill(null));
+const gameState = { inertState, activeBrick: null, speed: 3, score: 0 }
+
 
 for (let i = 0; i < 6; i++) inertState[19][i] = 'orange'
 for (let i = 6; i < 9; i++) inertState[19][i] = 'green'
@@ -15,20 +18,22 @@ renderInert();
 // const brick1 = [{ x: 3, y: 6 }, { x: 3, y: 7 }, { x: 4, y: 7 }, { x: 4, y: 8 }]
 
 // brick1.forEach(coords => blocks[coords.y*10 + coords.x].style.background = 'red')
-fetch('bricks.txt').then(response => response.text()).then(parse).then(brikcs=> {
-    
-    const brick = bricks[rnd(bricks.length)]
-    for (let i = 0; i < 3; i++) {
-      moveBrick(brick, 'right');
-    }
-    brick.coords.forEach(coords => blocks[coords.y * 10 + coords.x].style.background = brick.color)
+fetch('bricks.txt').then(response => response.text()).then(parse).then(brickItems => {
+  bricks.push(...brickItems)
 
-    setInterval(() => {
-      renderInert();
-      moveBrick(brick, 'down');
-      brick.coords.forEach(coords => blocks[coords.y * 10 + coords.x].style.background = brick.color)
-    }, 400)
-  })
+  getNextBrick()
+
+  for (let i = 0; i < 3; i++) {
+    moveBrick(brick, 'right');
+  }
+  brick.coords.forEach(coords => blocks[coords.y * 10 + coords.x].style.background = brick.color)
+
+  setInterval(() => {
+    renderInert();
+    moveBrick(brick, 'down');
+    brick.coords.forEach(coords => blocks[coords.y * 10 + coords.x].style.background = brick.color)
+  }, 400)
+})
 
 
 function parse(str) {
@@ -75,3 +80,34 @@ function moveBrick(brick, side) {
     brick.coords.forEach(coords => coords.x++);
   }
 }
+
+function getNextBrick() {
+  const brick = bricks[rnd(bricks.length)]
+  gameState.activeBrick = clone(brick)
+  //повернуть сл образом
+  // установить его над экраном по центру
+  // добавить его в игровое состояние
+
+}
+
+function clone(obj) {
+  const json = JSON.stringify(obj)
+  return JSON.parse(json)
+  
+}
+
+function prepare (brick) {
+  const width = Math.max(...brick.coords(({x}) => x))
+  const height = Math.max(...brick.coords(({y}) => y))
+  const side = Math.max(width, height)
+  const shiftX = Math.floor((side - width)/2)
+  const shiftY = Math.floor((side - height)/2)
+
+
+  brick.coords.forEach(coord => coord.x += shiftX)
+  brick.coords.forEach(coord => coord.y += shiftY)
+}
+
+
+
+
